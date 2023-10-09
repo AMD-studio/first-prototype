@@ -71,12 +71,15 @@ public class PlayerController : MonoBehaviour
 
     private void HandleRotation()
     {
-        // Расчет вращения уже обработан в HandleMovementInput.
+
     }
 
     private void UpdateAnimator()
     {
-        float moveAmount = Mathf.Clamp01(Mathf.Abs(Input.GetAxis("Horizontal")) + Mathf.Abs(Input.GetAxis("Vertical")));
+        float h = Input.GetAxis("Horizontal");
+        float v = Input.GetAxis("Vertical");
+
+        float moveAmount = Mathf.Clamp01(Mathf.Abs(h) + Mathf.Abs(v));
         animator.SetFloat("moveAmount", moveAmount, 0.2f, Time.deltaTime);
     }
 

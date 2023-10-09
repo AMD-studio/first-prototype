@@ -18,6 +18,8 @@ public class CameraController : MonoBehaviour
     private float invertXVal;
     private float invertYVal;
 
+    public Quaternion PlanarRotation => Quaternion.Euler(0, rotationY, 0);
+
     private void Start()
     {
         Cursor.visible = false;
@@ -35,10 +37,13 @@ public class CameraController : MonoBehaviour
         invertXVal = invertX ? -1 : 1;
         invertYVal = invertY ? -1 : 1;
 
-        rotationX += Input.GetAxis("Camera Y") * invertYVal * rotationSpeed;
+        float camX = Input.GetAxis("Camera X");
+        float camY = Input.GetAxis("Camera Y");
+
+        rotationX += camY * invertYVal * rotationSpeed;
         rotationX = Mathf.Clamp(rotationX, minVerticalAngle, maxVerticalAngle);
 
-        rotationY += Input.GetAxis("Camera X") * invertXVal * rotationSpeed;
+        rotationY += camX * invertXVal * rotationSpeed;
     }
 
     private void UpdateCameraPosition()
@@ -49,6 +54,4 @@ public class CameraController : MonoBehaviour
         transform.position = focusPosition - targetRotation * new Vector3(0, 0, distance);
         transform.rotation = targetRotation;
     }
-
-    public Quaternion PlanarRotation => Quaternion.Euler(0, rotationY, 0);
 }
