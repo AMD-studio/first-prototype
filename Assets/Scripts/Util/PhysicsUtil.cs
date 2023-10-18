@@ -4,16 +4,38 @@ using UnityEngine;
 
 public class PhysicsUtil
 {
-    public static bool ThreeRaycasts(Vector3 origin, Vector3 dir, float spacing, Transform transform, 
-        out List<RaycastHit> hits, float distance, LayerMask layer, bool debugDraw=false)
+    public static bool ThreeRaycasts(
+        Vector3 origin, 
+        Vector3 dir, float 
+        spacing, 
+        Transform transform, 
+        out List<RaycastHit> hits, 
+        float distance, 
+        LayerMask layer, 
+        bool debugDraw = false)
     {
-        bool centerHitFound = Physics.Raycast(origin, Vector3.down, out RaycastHit centerHit, distance, layer);
-        bool leftHitFound = Physics.Raycast(origin - transform.right * spacing, Vector3.down, out RaycastHit leftHit, distance, layer);
-        bool rightHitFound = Physics.Raycast(origin + transform.right * spacing, Vector3.down, out RaycastHit rightHit, distance, layer);
+        hits = new List<RaycastHit>();
+        bool hitFound = false;
 
-        hits = new List<RaycastHit>() { centerHit, leftHit, rightHit };
+        RaycastHit centerHit, leftHit, rightHit;
 
-        bool hitFound = centerHitFound || leftHitFound || rightHitFound;
+        if (Physics.Raycast(origin, Vector3.down, out centerHit, distance, layer))
+        {
+            hitFound = true;
+            hits.Add(centerHit);
+        }
+
+        if (Physics.Raycast(origin - transform.right * spacing, Vector3.down, out leftHit, distance, layer))
+        {
+            hitFound = true;
+            hits.Add(leftHit);
+        }
+
+        if (Physics.Raycast(origin + transform.right * spacing, Vector3.down, out rightHit, distance, layer))
+        {
+            hitFound = true;
+            hits.Add(rightHit);
+        }
 
         if (hitFound && debugDraw)
         {
