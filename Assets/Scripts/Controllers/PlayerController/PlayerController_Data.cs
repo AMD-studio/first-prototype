@@ -62,5 +62,4 @@ public partial class PlayerController : MonoBehaviour
         get { return groundCheckOffset; }
         set { groundCheckOffset = value; }
     }
-
 }

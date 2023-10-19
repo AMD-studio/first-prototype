@@ -8,8 +8,8 @@ public class ClimbController : MonoBehaviour
     private PlayerController playerController;
     private ParkourController parkourController;
     private EnvironmentScanner envScanner;
-    [SerializeField] 
-    public ParkourAction jumpDownAction;
+    [SerializeField] private ParkourAction jumpDownAction;
+    [SerializeField] private ParkourAction clibUpAction;
 
     private void Awake()
     {
@@ -27,24 +27,9 @@ public class ClimbController : MonoBehaviour
         else
         {
             HandleHangingInput();
-
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                Debug.Log("F");
-                DetachFromLedge();
-            }
         }
     }
 
-    private void DetachFromLedge()
-    {
-        if (currentPoint != null && playerController.IsHanging)
-        {
-            StartCoroutine(parkourController.DoAction(jumpDownAction));
-            playerController.IsHanging = false;
-            currentPoint = null;
-        }
-    }
 
     private void TryToHang()
     {
@@ -97,33 +82,69 @@ public class ClimbController : MonoBehaviour
 
         Vector2 inputDir = new Vector2(horizontalInput, verticalInput);
 
+        if (Input.GetKey(KeyCode.LeftShift) && Input.GetButton("Jump"))
+        {
+            Debug.Log("GetDown");
+            HandleGetDown();
+        }
+
         if (playerController.InAction || inputDir == Vector2.zero)
             return;
 
-        HandleNeighbour(inputDir);
+        ActionOnNeighbour(inputDir);
     }
 
-    private void HandleNeighbour(Vector2 inputDir)
+    private void ActionOnNeighbour(Vector2 inputDir)
     {
         var neighbour = currentPoint.GetNeighbour(inputDir);
+
         if (neighbour == null)
             return;
 
-        if (neighbour.connectionType == ConnectionType.Jump && Input.GetButton("Jump"))
+        var connectionType = neighbour.connectionType;
+
+        if (Input.GetButton("Jump"))
         {
-            HandleJump(neighbour);
+            if ((connectionType & ConnectionType.Jump) != 0)
+            {
+                Debug.Log("Jump");
+                HandleJump(neighbour);
+            }
+            else if ((connectionType & ConnectionType.GetUp) != 0 && Input.GetKey(KeyCode.W))
+            {
+                Debug.Log("GetUp");
+                HandleGetUp();
+            }
         }
-        else if (neighbour.connectionType == ConnectionType.Move)
+        else if ((connectionType & ConnectionType.Move) != 0)
         {
+            Debug.Log("Move");
             HandleMove(neighbour);
         }
+    }
+
+    private void HandleGetUp()
+    {
+        LeaveEdge();
+        StartCoroutine(parkourController.DoAction(clibUpAction));
+    }
+
+    private void HandleGetDown()
+    {
+        LeaveEdge();
+        StartCoroutine(parkourController.DoAction(jumpDownAction));
+    }
+
+    void LeaveEdge()
+    {
+        playerController.IsHanging = false;
+        currentPoint = null;
     }
 
     private void HandleJump(Neighbour neighbour)
     {
         currentPoint = neighbour.point;
         Transform ledgeTransform = currentPoint.transform;
-
 
         string animation;
         if (neighbour.direction.y == 1)
@@ -174,9 +195,8 @@ public class ClimbController : MonoBehaviour
         return ledge.position + ledge.forward * offsetValue.z + Vector3.up * offsetValue.y - handDirection * offsetValue.x;
     }
 
-
     IEnumerator JumpToLedge(
-        string anim, 
+        string animation, 
         Transform ledge, 
         float matchStartTime, 
         float matchTargetTime,
@@ -193,8 +213,9 @@ public class ClimbController : MonoBehaviour
 
         var targetRot = Quaternion.LookRotation(-ledge.forward);
 
-        yield return playerController.DoAction(anim, matchParams, targetRot, new ActionParameters { Rotate = true });
+        yield return playerController.DoAction(animation, matchParams, targetRot, new ActionParameters { Rotate = true });
 
         playerController.IsHanging = true;
     }
+ 
 }
