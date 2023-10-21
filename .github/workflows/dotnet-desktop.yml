@@ -14,19 +14,21 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Set up Unity
-      uses: webbertakken/unity-actions@v2
-      with:
-        unityVersion: 2022.3.7f1  # Specify the Unity version you are using
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gpgv
+        wget https://public-cdn.cloud.unity3d.com/hub/prod/UnityHub.AppImage -O unityhub
+        chmod +x unityhub
+        ./unityhub install --version 2022.3.7f1 --no-dl
 
     - name: Build Unity project
       run: |
-        unity -batchmode -quit -projectPath $GITHUB_WORKSPACE -executeMethod Prototype.Build
+        ./Unity/Hub/Editor/2022.3.7f1/Editor/Unity -batchmode -quit -projectPath $GITHUB_WORKSPACE -executeMethod YourBuildScriptName.Build
       env:
         UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-
 
     - name: Publish artifacts
       uses: actions/upload-artifact@v2
       with:
         name: Build-Artifact
-        path: Builds
+        path: YourUnityProjectPath/Builds
