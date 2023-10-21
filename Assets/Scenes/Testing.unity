@@ -33355,17 +33355,17 @@ PrefabInstance:
     - target: {fileID: 5556358532925082189, guid: 9e70d0b595d510742bfdf66867f64069,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.03764928
+      value: -0.037649337
       objectReference: {fileID: 0}
     - target: {fileID: 5556358532925082189, guid: 9e70d0b595d510742bfdf66867f64069,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.06415535
+      value: -0.064155355
       objectReference: {fileID: 0}
     - target: {fileID: 5556358532925082189, guid: 9e70d0b595d510742bfdf66867f64069,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.00425331
+      value: 0.0042533064
       objectReference: {fileID: 0}
     - target: {fileID: 5556358532959275490, guid: 9e70d0b595d510742bfdf66867f64069,
         type: 3}
@@ -33385,22 +33385,22 @@ PrefabInstance:
     - target: {fileID: 5556358532959275490, guid: 9e70d0b595d510742bfdf66867f64069,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9996352
+      value: 0.99963516
       objectReference: {fileID: 0}
     - target: {fileID: 5556358532959275490, guid: 9e70d0b595d510742bfdf66867f64069,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.026928328
+      value: 0.026928278
       objectReference: {fileID: 0}
     - target: {fileID: 5556358532959275490, guid: 9e70d0b595d510742bfdf66867f64069,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.0021011762
+      value: 0.0021011867
       objectReference: {fileID: 0}
     - target: {fileID: 5556358532959275490, guid: 9e70d0b595d510742bfdf66867f64069,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.00005660183
+      value: -0.00005660198
       objectReference: {fileID: 0}
     - target: {fileID: 5556358532959275493, guid: 9e70d0b595d510742bfdf66867f64069,
         type: 3}
@@ -33425,22 +33425,22 @@ PrefabInstance:
     - target: {fileID: 5556358533096778057, guid: 9e70d0b595d510742bfdf66867f64069,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.99773926
+      value: 0.9977394
       objectReference: {fileID: 0}
     - target: {fileID: 5556358533096778057, guid: 9e70d0b595d510742bfdf66867f64069,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.019552063
+      value: -0.019552115
       objectReference: {fileID: 0}
     - target: {fileID: 5556358533096778057, guid: 9e70d0b595d510742bfdf66867f64069,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.06406764
+      value: -0.06406762
       objectReference: {fileID: 0}
     - target: {fileID: 5556358533096778057, guid: 9e70d0b595d510742bfdf66867f64069,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.0054164827
+      value: 0.0054164766
       objectReference: {fileID: 0}
     - target: {fileID: 5556358533142032526, guid: 9e70d0b595d510742bfdf66867f64069,
         type: 3}
@@ -33455,17 +33455,17 @@ PrefabInstance:
     - target: {fileID: 5556358533142032527, guid: 9e70d0b595d510742bfdf66867f64069,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -20.5
+      value: -2.48
       objectReference: {fileID: 0}
     - target: {fileID: 5556358533142032527, guid: 9e70d0b595d510742bfdf66867f64069,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 8.63
+      value: 4.69
       objectReference: {fileID: 0}
     - target: {fileID: 5556358533142032527, guid: 9e70d0b595d510742bfdf66867f64069,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 90.2
+      value: 79.09
       objectReference: {fileID: 0}
     - target: {fileID: 5556358533142032527, guid: 9e70d0b595d510742bfdf66867f64069,
         type: 3}
@@ -33525,17 +33525,17 @@ PrefabInstance:
     - target: {fileID: 5556358533144897771, guid: 9e70d0b595d510742bfdf66867f64069,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.0014004596
+      value: -0.0014005154
       objectReference: {fileID: 0}
     - target: {fileID: 5556358533144897771, guid: 9e70d0b595d510742bfdf66867f64069,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.063958526
+      value: -0.063958496
       objectReference: {fileID: 0}
     - target: {fileID: 5556358533144897771, guid: 9e70d0b595d510742bfdf66867f64069,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.0065809446
+      value: 0.0065809377
       objectReference: {fileID: 0}
     - target: {fileID: 5556358533377525084, guid: 9e70d0b595d510742bfdf66867f64069,
         type: 3}
@@ -33550,7 +33550,7 @@ PrefabInstance:
     - target: {fileID: 5556358534259412729, guid: 9e70d0b595d510742bfdf66867f64069,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.3600006
+      value: 0.36000013
       objectReference: {fileID: 0}
     - target: {fileID: 5556358534259412729, guid: 9e70d0b595d510742bfdf66867f64069,
         type: 3}
@@ -41141,21 +41141,6 @@ MonoBehaviour:
   minDistance: 0.35
   updateConnections: 0
   resetConnections: 0
-  allPoints:
-  - {fileID: 1607457839}
-  - {fileID: 1607457842}
-  - {fileID: 1607457841}
-  - {fileID: 1607457840}
-  - {fileID: 1607457838}
-  - {fileID: 1414039559}
-  - {fileID: 1414039561}
-  - {fileID: 1414039558}
-  - {fileID: 1414039560}
-  - {fileID: 1414039557}
-  - {fileID: 1518407953}
-  - {fileID: 1518407954}
-  - {fileID: 1563919372}
-  - {fileID: 1563919371}
   validAngleRange: 22.5
 --- !u!1 &1399439781
 GameObject:
@@ -52389,21 +52374,6 @@ MonoBehaviour:
   minDistance: 0.33
   updateConnections: 0
   resetConnections: 0
-  allPoints:
-  - {fileID: 1681005506}
-  - {fileID: 1681005505}
-  - {fileID: 1681005504}
-  - {fileID: 1681005503}
-  - {fileID: 1681005501}
-  - {fileID: 1617586389}
-  - {fileID: 1617586388}
-  - {fileID: 1617586387}
-  - {fileID: 1617586386}
-  - {fileID: 1617586384}
-  - {fileID: 1155610846}
-  - {fileID: 1155610844}
-  - {fileID: 1637161488}
-  - {fileID: 1637161486}
   validAngleRange: 22.5
 --- !u!4 &1966959995
 Transform:
@@ -61947,84 +61917,6 @@ MonoBehaviour:
   minDistance: 0.25
   updateConnections: 0
   resetConnections: 0
-  allPoints:
-  - {fileID: 2128422261}
-  - {fileID: 495352554}
-  - {fileID: 144451853}
-  - {fileID: 2120479433}
-  - {fileID: 1188405280}
-  - {fileID: 728158208}
-  - {fileID: 1358374989}
-  - {fileID: 346414308}
-  - {fileID: 1425863300}
-  - {fileID: 1820698411}
-  - {fileID: 1103988823}
-  - {fileID: 1555017755}
-  - {fileID: 401113535}
-  - {fileID: 981209031}
-  - {fileID: 1010031519}
-  - {fileID: 1520007212}
-  - {fileID: 2087796834}
-  - {fileID: 814975351}
-  - {fileID: 195499459}
-  - {fileID: 1200464471}
-  - {fileID: 943558153}
-  - {fileID: 609413542}
-  - {fileID: 1399439783}
-  - {fileID: 647360583}
-  - {fileID: 361968505}
-  - {fileID: 686740166}
-  - {fileID: 684406778}
-  - {fileID: 684406780}
-  - {fileID: 684406782}
-  - {fileID: 684406781}
-  - {fileID: 684406779}
-  - {fileID: 285916092}
-  - {fileID: 285916094}
-  - {fileID: 285916096}
-  - {fileID: 285916095}
-  - {fileID: 285916093}
-  - {fileID: 1275951283}
-  - {fileID: 1275951284}
-  - {fileID: 1275951286}
-  - {fileID: 1275951285}
-  - {fileID: 1275951282}
-  - {fileID: 589364667}
-  - {fileID: 589364666}
-  - {fileID: 589364664}
-  - {fileID: 589364665}
-  - {fileID: 589364663}
-  - {fileID: 2008918947}
-  - {fileID: 2008918945}
-  - {fileID: 2008918944}
-  - {fileID: 2008918946}
-  - {fileID: 2008918943}
-  - {fileID: 1179631442}
-  - {fileID: 1721479310}
-  - {fileID: 694991798}
-  - {fileID: 351741053}
-  - {fileID: 512191399}
-  - {fileID: 1784238958}
-  - {fileID: 488792531045551601}
-  - {fileID: 6064893012225190289}
-  - {fileID: 7579790494271743960}
-  - {fileID: 4231766221028112180}
-  - {fileID: 1584917197222968735}
-  - {fileID: 1931794383}
-  - {fileID: 1265417430}
-  - {fileID: 703454993}
-  - {fileID: 632605116}
-  - {fileID: 1618345150}
-  - {fileID: 906106898}
-  - {fileID: 620699808}
-  - {fileID: 1297464894}
-  - {fileID: 1125420025}
-  - {fileID: 707070363}
-  - {fileID: 136397566}
-  - {fileID: 1095584938}
-  - {fileID: 1867663384}
-  - {fileID: 1890559133194402370}
-  - {fileID: 5499129044716960615}
   validAngleRange: 24.4
 --- !u!114 &7579790494271743960
 MonoBehaviour:
