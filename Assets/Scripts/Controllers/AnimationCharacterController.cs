@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Climbing
 {
@@ -15,6 +16,18 @@ namespace Climbing
         public AnimatorStateInfo animState;
 
         private MatchTargetWeightMask matchTargetWeightMask = new(Vector3.one, 0);
+
+        private readonly Dictionary<Vector2, string> directionToAnimation = new()
+        {
+            { new Vector2(-1, 0), "Braced Hang Hop Left" },
+            { new Vector2(-1, 1), "Braced Hang Hop Left" },
+            { new Vector2(-1, -1), "Braced Hang Hop Left" },
+            { new Vector2(1, 0), "Braced Hang Hop Right" },
+            { new Vector2(1, 1), "Braced Hang Hop Right" },
+            { new Vector2(1, -1), "Braced Hang Hop Right" },
+            { new Vector2(0, 1), "Braced Hang Hop Up" },
+            { new Vector2(0, -1), "Braced Hang Hop Down" }
+        };
 
         void Start()
         {
@@ -70,34 +83,20 @@ namespace Climbing
         {
             if (state == ClimbController.ClimbState.BHanging)
             {
-                if (direction.x == -1 && direction.y == 0 ||
-                    direction.x == -1 && direction.y == 1 ||
-                    direction.x == -1 && direction.y == -1)
+                if (directionToAnimation.TryGetValue(direction, out string animation))
                 {
-                    animator.CrossFade("Braced Hang Hop Left", 0.2f);
-                    startTime = 0.2f;
-                    endTime = 0.49f;
-                }
-                else if (direction.x == 1 && direction.y == 0 ||
-                        direction.x == 1 && direction.y == -1 ||
-                        direction.x == 1 && direction.y == 1)
-                {
-                    animator.CrossFade("Braced Hang Hop Right", 0.2f);
-                    startTime = 0.2f;
-                    endTime = 0.49f;
-                }
-                else if (direction.x == 0 && direction.y == 1)
-                {
-                    animator.CrossFade("Braced Hang Hop Up", 0.2f);
-                    startTime = 0.3f;
-                    endTime = 0.48f;
-                }
-                else if (direction.x == 0 && direction.y == -1)
-                {
+                    animator.CrossFade(animation, 0.2f);
 
-                    animator.CrossFade("Braced Hang Hop Down", 0.2f);
-                    startTime = 0.3f;
-                    endTime = 0.7f;
+                    if (direction == Vector3.up || direction == Vector3.down)
+                    {
+                        startTime = 0.3f;
+                        endTime = (direction == Vector3.down) ? 0.7f : 0.48f;
+                    }
+                    else
+                    {
+                        startTime = 0.2f;
+                        endTime = 0.49f;
+                    }
                 }
             }
 

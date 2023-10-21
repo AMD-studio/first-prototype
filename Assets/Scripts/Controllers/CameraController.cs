@@ -23,7 +23,6 @@ namespace Climbing
 
         void Update()
         {
-            //Lerps Camera Position to the new offset
             if (anim)
             {
                 curTime += Time.deltaTime / maxTime;
@@ -37,13 +36,11 @@ namespace Climbing
         /// <summary>
         /// Adds Offset to the camera while being on Climbing or inGround
         /// </summary>
-        public void newOffset(bool offset)
+        public void NewOffset(bool offset)
         {
-            if (offset)
-                _target = _offset;
-            else
-                _target = _default;
-
+            _target = offset ? 
+                _offset : 
+                _default;
             anim = true;
             curTime = 0;
         }

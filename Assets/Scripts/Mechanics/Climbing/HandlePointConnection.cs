@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -13,29 +14,27 @@ namespace Climbing
         public bool updateConnections;
         public bool resetConnections;
 
-        public List<Point> allPoints = new List<Point>();
-        Vector3[] availableDirections = new Vector3[8];
+        private readonly List<Point> allPoints = new();
+
+        private readonly Dictionary<int, Vector3> availableDirections = new Dictionary<int, Vector3>
+        {
+            { 0, new Vector3(1, 0, 0) },
+            { 1, new Vector3(-1, 0, 0) },
+            { 2, new Vector3(0, 1, 0) },
+            { 3, new Vector3(0, -1, 0) },
+            { 4, new Vector3(-1, -1, 0) },
+            { 5, new Vector3(1, 1, 0) },
+            { 6, new Vector3(1, -1, 0) },
+            { 7, new Vector3(-1, 1, 0) }
+        };
+
         public float validAngleRange = 22.5f;
 
-        //Directions to Connect Climb Points
-        void CreateDirections()
-        {
-            availableDirections[0] = new Vector3(1, 0, 0);
-            availableDirections[1] = new Vector3(-1, 0, 0);
-            availableDirections[2] = new Vector3(0, 1, 0);
-            availableDirections[3] = new Vector3(0, -1, 0);
-            availableDirections[4] = new Vector3(-1, -1, 0);
-            availableDirections[5] = new Vector3(1, 1, 0);
-            availableDirections[6] = new Vector3(1, -1, 0);
-            availableDirections[7] = new Vector3(-1, 1, 0);
-        }
-
-        void Update()
+        private void Update()
         {
             if (updateConnections)
             {
                 GetPoints();
-                CreateDirections();
                 CreateConnections();
                 RefreshAll();
                 updateConnections = false;
@@ -43,153 +42,116 @@ namespace Climbing
 
             if (resetConnections)
             {
-                GetPoints();
-                for(int p = 0; p < allPoints.Count; p++)
-                {
-                    allPoints[p].neighbours.Clear();
-                }
-                RefreshAll();
+                ResetConnections();
                 resetConnections = false;
             }
         }
 
-        //Get all Child Points
-        void GetPoints()
+        private void GetPoints()
         {
             allPoints.Clear();
-            Point[] hp = GetComponentsInChildren<Point>();
-            allPoints.AddRange(hp);
+            allPoints.AddRange(GetComponentsInChildren<Point>());
         }
 
-        void CreateConnections()
+        private void CreateConnections()
         {
-            for(int p = 0; p < allPoints.Count; p++)
+            foreach (Point from in allPoints)
             {
-                Point curPoint = allPoints[p]; 
-                CandidatePointsOnDirection(curPoint);
+                CandidatePointsOnDirection(from);
             }
         }
 
-        //Connects all points near with all neighbours on all directions
-        void CandidatePointsOnDirection(Point from)
+        private void ResetConnections()
         {
-            for (int p = 0; p < allPoints.Count; p++)
+            foreach (Point point in allPoints)
             {
-                Point targetPoint = allPoints[p];
-                float dis = Vector3.Distance(from.transform.position, targetPoint.transform.position);
-                if (dis < maxDistance && dis > minDistance /*&& from.transform.parent != targetPoint.transform.parent*/)
+                point.neighbours.Clear();
+            }
+            RefreshAll();
+        }
+
+        private void CandidatePointsOnDirection(Point from)
+        {
+            foreach (Point target in allPoints)
+            {
+                if (from == target)
+                    continue;
+
+                float distance = Vector3.Distance(from.transform.position, target.transform.position);
+
+                if (distance < maxDistance && distance > minDistance)
                 {
-                    Vector3 direction = targetPoint.transform.position - from.transform.position;
+                    Vector3 direction = target.transform.position - from.transform.position;
                     Vector3 relativeDirection = from.transform.InverseTransformDirection(direction);
                     relativeDirection.z = 0;
 
-                    for (int d = 0; d < availableDirections.Length; d++)
+                    foreach (var kvp in availableDirections)
                     {
-                        if(IsDirectionValid(availableDirections[d], relativeDirection))
-                            AddNeighbour(from, targetPoint, availableDirections[d]);
+                        if (IsDirectionValid(kvp.Value, relativeDirection))
+                        {
+                            AddNeighbour(from, target, kvp.Value);
+                        }
                     }
                 }
             }
         }
 
-        public bool IsDirectionValid(Vector3 targetDirection, Vector3 candidate)
+        private bool IsDirectionValid(Vector3 targetDirection, Vector3 candidate)
         {
-            bool ret = false;
-
             float targetAngle = Mathf.Atan2(targetDirection.x, targetDirection.y) * Mathf.Rad2Deg;
             float angle = Mathf.Atan2(candidate.x, candidate.y) * Mathf.Rad2Deg;
-            if (targetAngle < 0)
-                targetAngle += 360;
+            targetAngle = (targetAngle + 360) % 360; // Normalize angles
 
-            if (angle < 0)
-                angle += 360;
-
-            if (angle <= targetAngle + validAngleRange && angle >= targetAngle - validAngleRange)
-            {
-                ret = true;
-            }
-
-            return ret;
+            return Mathf.Abs(targetAngle - angle) <= validAngleRange;
         }
 
-        public Vector2 IsDirectionAngleValid(Vector3 inputDirection, Vector3 pointDirection)
+        private void AddNeighbour(Point from, Point target, Vector3 direction)
         {
-            Vector2 angles = Vector2.zero;
+            from.neighbours.Add(new Neighbour { target = target, direction = direction });
 
-            if (inputDirection == Vector3.zero) //No Input Direction
-                return Vector2.zero;
-
-            //Get Angle of direction + Fix negative Atan2 negative angles
-            float inputAngle = (Mathf.Atan2(inputDirection.x, inputDirection.y) + ((inputDirection.x < 0) ? 2 * Mathf.PI : 0)) * Mathf.Rad2Deg;
-            float pointAngle = (Mathf.Atan2(pointDirection.x, pointDirection.y) + ((pointDirection.x < 0) ? 2 * Mathf.PI : 0)) * Mathf.Rad2Deg;
-
-            if ((pointAngle <= inputAngle + validAngleRange && pointAngle >= inputAngle - validAngleRange) ||
-                pointAngle <= inputAngle + validAngleRange + 360 && pointAngle >= (inputAngle - validAngleRange + 360) % 360)
-            {
-                angles = new Vector2(pointAngle, inputAngle);
-            }
-
-            return angles;
+#if UNITY_EDITOR
+            EditorUtility.SetDirty(from);
+#endif
         }
 
-        //Creates 1 connection between a point with another
-        void AddNeighbour(Point from, Point target, Vector3 direction)
+        private void RefreshAll()
         {
-            Neighbour n = new Neighbour();
-            n.target = target;
-            n.direction = direction;
-            from.neighbours.Add(n);
-
-            #if UNITY_EDITOR
-                EditorUtility.SetDirty(from);
-            #endif
-        }
-
-        void RefreshAll()
-        {
-            DrawLine dl = transform.GetComponent<DrawLine>();
-
-            if (dl)
+            if (transform.TryGetComponent<DrawLine>(out var dl))
                 dl.refresh = true;
         }
 
         public List<Connection> GetAllConnections()
         {
-            List<Connection> ret = new List<Connection>();
+            List<Connection> connections = new();
+            HashSet<(Point, Point)> uniqueConnections = new();
 
-            for(int i = 0; i < allPoints.Count; i++)
+            foreach (Point point in allPoints)
             {
-                for(int j = 0; j < allPoints[i].neighbours.Count; j++)
+                foreach (var neighbour in point.neighbours)
                 {
-                    Connection con = new Connection();
-                    con.target1 = allPoints[i];
-                    con.target2 = allPoints[i].neighbours[j].target;
-
-                    if(!ContainsConnection(ret, con))
+                    Point target = neighbour.target;
+                    if (uniqueConnections.Add((point, target)) || 
+                        uniqueConnections.Add((target, point)))
                     {
-                        ret.Add(con);
+                        connections.Add(new Connection { target1 = point, target2 = target });
                     }
                 }
             }
 
-            return ret;
+            return connections;
         }
 
-        bool ContainsConnection(List<Connection> l, Connection c)
-        {
-            bool ret = false;
 
-            for(int i = 0; i <l.Count; i++)
-            {
-                if(l[i].target1 == c.target1 && l[i].target2 == c.target2 || 
-                   l[i].target2 == c.target1 && l[i].target1 == c.target2)
-                {
-                    ret = true;
-                    break;
-                }
-            }
-            return ret;
-        }        
+        private bool ContainsConnection(List<Connection> connections, Point target1, Point target2)
+        {
+            return connections.Any(c => AreConnectionsEqual(c, target1, target2));
+        }
+
+        private bool AreConnectionsEqual(Connection connection, Point target1, Point target2)
+        {
+            return (connection.target1 == target1 && connection.target2 == target2) ||
+                   (connection.target1 == target2 && connection.target2 == target1);
+        }
     }
 
     public class Connection
@@ -197,5 +159,4 @@ namespace Climbing
         public Point target1;
         public Point target2;
     }
-
 }

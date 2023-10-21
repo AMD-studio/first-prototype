@@ -5,8 +5,7 @@ namespace Climbing
     [RequireComponent(typeof(ClimbController))]
     public class VaultClimbLedge : VaultAction
     {
-        ClimbController climbController;
-
+        readonly ClimbController climbController;
         public VaultClimbLedge(ThirdPersonController _vaultingController) : base(_vaultingController)
         {
             climbController = controller.GetComponent<ClimbController>();
@@ -14,10 +13,7 @@ namespace Climbing
 
         public override bool CheckAction()
         {
-            if (controller.isVaulting)
-                return false;
-
-            return climbController.ClimbCheck();
+            return !controller.isVaulting && climbController.ClimbCheck();
         }
 
         public override bool Update()

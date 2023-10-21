@@ -21,9 +21,9 @@ namespace Climbing
         private float endTime = 0.0f;
         private float rotTime = 0.0f;
         private float horizontalMovement = 0.0f;
-        private float smallHopMaxDistance = 0.35f; 
-        private float distanceToLedgeBraced = 0.3f;
-        private float distanceToLedgeFree = 0.1f;
+        private readonly float smallHopMaxDistance = 0.35f; 
+        private readonly float distanceToLedgeBraced = 0.3f;
+        private readonly float distanceToLedgeFree = 0.1f;
 
         private ThirdPersonController characterController;
         private DetectionCharacterController characterDetection;
@@ -76,21 +76,21 @@ namespace Climbing
                 if (AutoSearchBones)
                 {
                     Debug.LogWarning("In the Player ClimbController script is recommended to set the bones of Hands and Feet");
-
-                    if (LHand == null)
-                        LHand = characterAnimation.animator.GetBoneTransform(HumanBodyBones.LeftHand).gameObject;
-                    if (RHand == null)
-                        RHand = characterAnimation.animator.GetBoneTransform(HumanBodyBones.RightHand).gameObject;
-                    if (LFoot == null)
-                        LFoot = characterAnimation.animator.GetBoneTransform(HumanBodyBones.LeftFoot).gameObject;
-                    if (RFoot == null)
-                        RFoot = characterAnimation.animator.GetBoneTransform(HumanBodyBones.RightFoot).gameObject;
+                    AutoSearchAndAssignBones();
                 }
                 else
                 {
                     Debug.LogError("In the Player check that the ClimbController script has the GameObjects of the Hands and Feet assigned");
                 }
             }
+        }
+
+        private void AutoSearchAndAssignBones()
+        {
+            if (LHand == null) LHand = characterAnimation.animator.GetBoneTransform(HumanBodyBones.LeftHand).gameObject;
+            if (RHand == null) RHand = characterAnimation.animator.GetBoneTransform(HumanBodyBones.RightHand).gameObject;
+            if (LFoot == null) LFoot = characterAnimation.animator.GetBoneTransform(HumanBodyBones.LeftFoot).gameObject;
+            if (RFoot == null) RFoot = characterAnimation.animator.GetBoneTransform(HumanBodyBones.RightFoot).gameObject;
         }
 
         public void OnDrawGizmos()
@@ -103,6 +103,7 @@ namespace Climbing
                 Gizmos.DrawSphere(currentPoint.transform.position, 0.1f);
             }
         }
+
         public void OnAnimatorIK(int layerIndex)
         {
             //Reset IK Weight Position to default if not on Ledge
@@ -239,7 +240,7 @@ namespace Climbing
                     characterController.isJumping = true;
                     curClimbState = ClimbState.None;
                     characterAnimation.DropLedge((int)curClimbState);
-                    characterController.cameraController.newOffset(false);
+                    characterController.cameraController.NewOffset(false);
                 }
             }
 
@@ -427,7 +428,7 @@ namespace Climbing
                 toLedge = true;
                 onLedge = false;
                 ret = true;
-                characterController.cameraController.newOffset(false);
+                characterController.cameraController.NewOffset(false);
             }
             else
             {
@@ -761,7 +762,7 @@ namespace Climbing
 
             characterController.DisableController();
             toLedge = true;
-            characterController.cameraController.newOffset(true);
+            characterController.cameraController.NewOffset(true);
 
             return targetPos;
         }
