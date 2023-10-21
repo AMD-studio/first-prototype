@@ -4,7 +4,12 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Fence
+  - Ledge
+  - Vault
+  - Deep Jump
+  - Slide
+  - Reach
+  - Pole
   layers:
   - Default
   - TransparentFX
@@ -12,11 +17,11 @@ TagManager:
   - 
   - Water
   - UI
-  - Obstacles
-  - ClimbLedges
   - 
   - 
-  - 
+  - Ledge
+  - Wall
+  - Player
   - 
   - 
   - 

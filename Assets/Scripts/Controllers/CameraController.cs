@@ -1,53 +1,51 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class CameraController : MonoBehaviour
+namespace Climbing
 {
-    [SerializeField] Transform followTarget;
-
-    [SerializeField] float rotationSpeed = 2f;
-    [SerializeField] float distance = 5;
-
-    [SerializeField] float minVerticalAngle = -45;
-    [SerializeField] float maxVerticalAngle = 45;
-
-    [SerializeField] Vector2 framingOffset;
-
-    [SerializeField] bool invertX;
-    [SerializeField] bool invertY;
-
-
-    float rotationX;
-    float rotationY;
-
-    float invertXVal;
-    float invertYVal;
-
-    private void Start()
+    public class CameraController : MonoBehaviour
     {
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        private CinemachineCameraOffset cameraOffset;
+
+        public Vector3 _offset;
+        public Vector3 _default;
+        private Vector3 _target;
+
+        public float maxTime = 2.0f;
+        private float curTime = 0.0f;
+        private bool anim = false;
+
+
+        void Start()
+        {
+            cameraOffset = GetComponent<CinemachineCameraOffset>();
+        }
+
+
+        void Update()
+        {
+            //Lerps Camera Position to the new offset
+            if (anim)
+            {
+                curTime += Time.deltaTime / maxTime;
+                cameraOffset.m_Offset = Vector3.Lerp(cameraOffset.m_Offset, _target, curTime);
+            }
+
+            if (curTime >= 1.0f)
+                anim = false;
+        }
+
+        /// <summary>
+        /// Adds Offset to the camera while being on Climbing or inGround
+        /// </summary>
+        public void newOffset(bool offset)
+        {
+            if (offset)
+                _target = _offset;
+            else
+                _target = _default;
+
+            anim = true;
+            curTime = 0;
+        }
     }
-
-    private void Update()
-    {
-        invertXVal =  (invertX) ? -1 : 1;
-        invertYVal =  (invertY) ? -1 : 1;
-
-        rotationX += Input.GetAxis("Camera Y") * invertYVal * rotationSpeed;
-        rotationX = Mathf.Clamp(rotationX, minVerticalAngle, maxVerticalAngle);
-
-        rotationY += Input.GetAxis("Camera X") * invertXVal * rotationSpeed;
-
-        var targetRotation = Quaternion.Euler(rotationX, rotationY, 0);
-
-        var focusPostion = followTarget.position + new Vector3(framingOffset.x, framingOffset.y);
-
-        transform.position = focusPostion - targetRotation * new Vector3(0, 0, distance);
-        transform.rotation = targetRotation;
-    }
-
-    public Quaternion PlanarRotation 
-        => Quaternion.Euler(0, rotationY, 0);
 }
