@@ -14,7 +14,13 @@ public class HUDController : MonoBehaviour
     {
         Instance = this;
     }
-
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            ToggleInventory();
+        }
+    }
     public void ShowActionLabel(string action)
     {
         ActionLabel.SetActive(true);
@@ -24,5 +30,11 @@ public class HUDController : MonoBehaviour
     {
         ActionLabel.SetActive(false);
         ActionLabel.GetComponentInChildren<TextMeshProUGUI>().text = "";
+    }
+
+    public void ToggleInventory()
+    {
+        var isInventoryOpen = Inventory.active;
+        Inventory.SetActive(!isInventoryOpen);
     }
 }
