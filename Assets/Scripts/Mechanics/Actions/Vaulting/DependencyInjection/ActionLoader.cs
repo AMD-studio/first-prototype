@@ -5,7 +5,7 @@ namespace Climbing.DependencyInjection
 {
     public interface IActionLoader
     {
-        Action LoadAction(string actionPath);
+        public Action LoadAction(string actionPath);
     }
 
     public class ActionLoader : IActionLoader

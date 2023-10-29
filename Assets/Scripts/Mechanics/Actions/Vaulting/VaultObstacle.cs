@@ -50,10 +50,9 @@ namespace Climbing
                         {
                             controller.characterAnimation.animator.CrossFade("Vaulting", 0.2f);
 
-                            startPos = controller.transform.position;
-                            startRot = controller.transform.rotation;
-                            targetPos = hit2.point;
-                            targetRot = Quaternion.LookRotation(targetPos - startPos);
+                            startTransform = new TransformData(controller.transform.position, controller.transform.rotation);
+                            targetTransform = new TransformData(hit2.point, Quaternion.LookRotation(targetTransform.Position - startTransform.Position));
+                          
                             vaultTime = startDelay; //This adds a delay to allow animation start in correct time
                             animLength = clip.length + startDelay;
                             controller.DisableController();
@@ -92,8 +91,8 @@ namespace Climbing
                 {
                     if (vaultTime >= 0)
                     {
-                        controller.transform.rotation = Quaternion.Lerp(startRot, targetRot, vaultTime * 4);
-                        controller.transform.position = Vector3.Lerp(startPos, targetPos, vaultTime);
+                        controller.transform.rotation = Quaternion.Lerp(startTransform.Rotation, targetTransform.Rotation, vaultTime * 4);
+                        controller.transform.position = Vector3.Lerp(startTransform.Position, targetTransform.Position, vaultTime);
                     }
                     return true;
                 }
@@ -116,7 +115,7 @@ namespace Climbing
 
         public override void DrawGizmos()
         {
-            Gizmos.DrawSphere(targetPos, 0.08f);
+            Gizmos.DrawSphere(targetTransform.Position, 0.08f);
             Gizmos.color = Color.green;
             Gizmos.DrawSphere(leftHandPosition, 0.08f);
         }

@@ -43,14 +43,13 @@ namespace Climbing
                         if (hit2.collider)
                         {
                             controller.characterAnimation.animator.CrossFade("Running Slide", 0.05f);
-                            dis = 4 / Vector3.Distance(startPos, targetPos);
+                            dis = 4 / Vector3.Distance(startTransform.Position, targetTransform.Position);
                             controller.characterAnimation.animator.SetFloat("AnimSpeed", dis);
                             controller.characterAnimation.switchCameras.SlideCam();
 
-                            startPos = controller.transform.position;
-                            startRot = controller.transform.rotation;
-                            targetPos = hit2.point;
-                            targetRot = Quaternion.LookRotation(targetPos - startPos);
+                            startTransform = new TransformData(controller.transform.position, controller.transform.rotation);
+                            targetTransform = new TransformData(hit2.point, Quaternion.LookRotation(targetTransform.Position - startTransform.Position));
+       
                             vaultTime = startDelay;
                             animLength = clip.length + startDelay;
                             controller.DisableController();
@@ -83,8 +82,11 @@ namespace Climbing
                 }
                 else
                 {
-                    controller.transform.rotation = Quaternion.Lerp(startRot, targetRot, vaultTime * 4);
-                    controller.transform.position = Vector3.Lerp(startPos, targetPos, vaultTime);
+                    controller
+                        .transform
+                        .SetPositionAndRotation(
+                            Vector3.Lerp(startTransform.Position, targetTransform.Position, vaultTime), 
+                            Quaternion.Lerp(startTransform.Rotation, targetTransform.Rotation, vaultTime * 4));
                     ret = true;
                 }
             }
@@ -95,7 +97,7 @@ namespace Climbing
         public override void DrawGizmos()
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawSphere(targetPos, 0.08f);
+            Gizmos.DrawSphere(targetTransform.Position, 0.08f);
         }
     }
 }

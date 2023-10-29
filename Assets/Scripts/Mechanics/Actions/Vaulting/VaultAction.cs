@@ -2,15 +2,27 @@
 
 namespace Climbing
 {
+    public struct TransformData
+    {
+        public Vector3 Position;
+        public Quaternion Rotation;
+
+        public TransformData(Vector3 position, Quaternion rotation)
+        {
+            Position = position;
+            Rotation = rotation;
+        }
+    }
+
     public abstract class VaultAction
     {
         protected AnimationClip clip;
         protected ThirdPersonController controller;
         protected AnimationCharacterController animator;
-        protected Vector3 targetPos;
-        protected Quaternion targetRot;
-        protected Vector3 startPos;
-        protected Quaternion startRot;
+
+        protected TransformData targetTransform;
+        protected TransformData startTransform;
+
         protected float vaultTime = 0.0f;
         protected float animLength = 0.0f;
         protected Vector3 kneeRaycastOrigin;

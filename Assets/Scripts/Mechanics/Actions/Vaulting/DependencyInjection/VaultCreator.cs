@@ -6,7 +6,7 @@ namespace Climbing.DependencyInjection
     // Interface for VaultActionCreators
     public interface IVaultActionCreator
     {
-        VaultAction CreateAction();
+        public VaultAction CreateAction();
     }
 
     public class VaultCreator<T> : IVaultActionCreator where T : VaultAction

@@ -28,54 +28,39 @@ namespace Climbing
         [HideInInspector] public ThirdPersonController controller;
         [HideInInspector] public Animator animator;
 
-        private readonly List<VaultAction> actions = new();
+        private IEnumerable<VaultAction> actions;
         private VaultAction curAction;
-
-        private void AddActionIfFlagSet(VaultActions vaultActions, VaultActions actionFlag, IVaultActionCreator actionCreator)
-        {
-            var tmpAction = actionCreator.CreateAction();
-
-            if (vaultActions.HasFlag(actionFlag) && 
-                tmpAction != null)
-            {
-                actions.Add(tmpAction);
-            }
-        }
 
         public void Start()
         {
             controller = GetComponent<ThirdPersonController>();
             animator = GetComponent<Animator>();
+            actions = GetActions();    
+        }
 
+        private IEnumerable<VaultAction> GetActions()
+        {
             IActionLoader actionLoader = new ActionLoader();
 
-            AddActionIfFlagSet(vaultActions, 
-                VaultActions.Vault_Obstacle, 
-                new VaultCreator<VaultObstacle>(controller, actionLoader, "ActionsConfig/VaultObstacle"));
+            yield return GetActionIfFlagSet(VaultActions.Vault_Obstacle, new VaultCreator<VaultObstacle>(controller, actionLoader, "ActionsConfig/VaultObstacle"));
+            yield return GetActionIfFlagSet(VaultActions.Vault_Over, new VaultCreator<VaultOver>(controller, actionLoader, "ActionsConfig/VaultOver"));
+            yield return GetActionIfFlagSet(VaultActions.Slide, new VaultCreator<VaultSlide>(controller, actionLoader, "ActionsConfig/VaultSlide"));
+            yield return GetActionIfFlagSet(VaultActions.Slide, new VaultCreator<VaultReach>(controller, actionLoader, "ActionsConfig/VaultReach"));
+            yield return GetActionIfFlagSet(VaultActions.Climb_Ledge, new VaultCreator<VaultClimbLedge>(controller));
+            yield return GetActionIfFlagSet(VaultActions.Jump_Prediction, new VaultCreator<VaultJumpPrediction>(controller));
+            yield return GetActionIfFlagSet(VaultActions.Vault_Down, new VaultCreator<VaultDown>(controller));
+        }
 
-            AddActionIfFlagSet(vaultActions, 
-                VaultActions.Vault_Over, 
-                new VaultCreator<VaultOver>(controller, actionLoader, "ActionsConfig/VaultOver"));
-            
-            AddActionIfFlagSet(vaultActions, 
-                VaultActions.Slide, 
-                new VaultCreator<VaultSlide>(controller, actionLoader, "ActionsConfig/VaultSlide"));
-            
-            AddActionIfFlagSet(vaultActions, 
-                VaultActions.Slide, 
-                new VaultCreator<VaultReach>(controller, actionLoader, "ActionsConfig/VaultReach"));
-            
-            AddActionIfFlagSet(vaultActions, 
-                VaultActions.Climb_Ledge, 
-                new VaultCreator<VaultClimbLedge>(controller));
-            
-            AddActionIfFlagSet(vaultActions, 
-                VaultActions.Jump_Prediction, 
-                new VaultCreator<VaultJumpPrediction>(controller));
-            
-            AddActionIfFlagSet(vaultActions, 
-                VaultActions.Vault_Down, 
-                new VaultCreator<VaultDown>(controller));
+        private VaultAction GetActionIfFlagSet(VaultActions vaultAction, IVaultActionCreator actionCreator)
+        {
+            var tmpAction = actionCreator.CreateAction();
+
+            if (vaultActions.HasFlag(vaultAction) && tmpAction != null)
+            {
+                return tmpAction;
+            }
+
+            return null;
         }
 
         private void Update()
