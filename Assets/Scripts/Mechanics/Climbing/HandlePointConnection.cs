@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -96,10 +97,16 @@ namespace Climbing
             }
         }
 
+        private float GetAtan2D(Vector3 vector)
+        {
+            return Mathf.Atan2(vector.x, vector.y);
+        }
+
         private bool IsDirectionValid(Vector3 targetDirection, Vector3 candidate)
         {
-            float targetAngle = Mathf.Atan2(targetDirection.x, targetDirection.y) * Mathf.Rad2Deg;
-            float angle = Mathf.Atan2(candidate.x, candidate.y) * Mathf.Rad2Deg;
+            float targetAngle = GetAtan2D(targetDirection) * Mathf.Rad2Deg;
+            float angle = GetAtan2D(candidate) * Mathf.Rad2Deg;
+
             targetAngle = (targetAngle + 360) % 360; // Normalize angles
 
             return Mathf.Abs(targetAngle - angle) <= validAngleRange;
@@ -127,11 +134,10 @@ namespace Climbing
 
             foreach (Point point in allPoints)
             {
-                foreach (var neighbour in point.neighbours)
+                foreach (Neighbour neighbour in point.neighbours)
                 {
                     Point target = neighbour.target;
-                    if (uniqueConnections.Add((point, target)) || 
-                        uniqueConnections.Add((target, point)))
+                    if (uniqueConnections.Add((point, target)) || uniqueConnections.Add((target, point)))
                     {
                         connections.Add(new Connection { target1 = point, target2 = target });
                     }
@@ -140,7 +146,6 @@ namespace Climbing
 
             return connections;
         }
-
 
         private bool ContainsConnection(List<Connection> connections, Point target1, Point target2)
         {

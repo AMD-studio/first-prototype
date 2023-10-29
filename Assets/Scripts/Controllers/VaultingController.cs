@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Climbing.DependencyInjection;
+using Unity.VisualScripting;
+using System.Linq;
 
 namespace Climbing
 {
@@ -28,44 +31,51 @@ namespace Climbing
         private readonly List<VaultAction> actions = new();
         private VaultAction curAction;
 
+        private void AddActionIfFlagSet(VaultActions vaultActions, VaultActions actionFlag, IVaultActionCreator actionCreator)
+        {
+            var tmpAction = actionCreator.CreateAction();
+
+            if (vaultActions.HasFlag(actionFlag) && 
+                tmpAction != null)
+            {
+                actions.Add(tmpAction);
+            }
+        }
+
         public void Start()
         {
             controller = GetComponent<ThirdPersonController>();
             animator = GetComponent<Animator>();
 
-            //Loads all Valt Actions Values
-            if(vaultActions.HasFlag(VaultActions.Vault_Obstacle))
-            {
-                Action actionInfo = Resources.Load<Action>("ActionsConfig/VaultObstacle");
-                Add(new VaultObstacle(controller, actionInfo));
-            }
-            if (vaultActions.HasFlag(VaultActions.Vault_Over))
-            {
-                Action actionInfo = Resources.Load<Action>("ActionsConfig/VaultOver");
-                Add(new VaultOver(controller, actionInfo));
-            }
-            if (vaultActions.HasFlag(VaultActions.Slide))
-            {
-                Action actionInfo = Resources.Load<Action>("ActionsConfig/VaultSlide");
-                Add(new VaultSlide(controller, actionInfo));
-            }
-            if (vaultActions.HasFlag(VaultActions.Slide))
-            {
-                Action actionInfo = Resources.Load<Action>("ActionsConfig/VaultReach");
-                Add(new VaultReach(controller, actionInfo));
-            }
-            if (vaultActions.HasFlag(VaultActions.Climb_Ledge))
-            {
-                Add(new VaultClimbLedge(controller));
-            }
-            if (vaultActions.HasFlag(VaultActions.Jump_Prediction))
-            {
-                Add(new VaultJumpPrediction(controller));
-            }
-            if (vaultActions.HasFlag(VaultActions.Vault_Down))
-            {
-                Add(new VaultDown(controller));
-            }
+            IActionLoader actionLoader = new ActionLoader();
+
+            AddActionIfFlagSet(vaultActions, 
+                VaultActions.Vault_Obstacle, 
+                new VaultCreator<VaultObstacle>(controller, actionLoader, "ActionsConfig/VaultObstacle"));
+
+            AddActionIfFlagSet(vaultActions, 
+                VaultActions.Vault_Over, 
+                new VaultCreator<VaultOver>(controller, actionLoader, "ActionsConfig/VaultOver"));
+            
+            AddActionIfFlagSet(vaultActions, 
+                VaultActions.Slide, 
+                new VaultCreator<VaultSlide>(controller, actionLoader, "ActionsConfig/VaultSlide"));
+            
+            AddActionIfFlagSet(vaultActions, 
+                VaultActions.Slide, 
+                new VaultCreator<VaultReach>(controller, actionLoader, "ActionsConfig/VaultReach"));
+            
+            AddActionIfFlagSet(vaultActions, 
+                VaultActions.Climb_Ledge, 
+                new VaultCreator<VaultClimbLedge>(controller));
+            
+            AddActionIfFlagSet(vaultActions, 
+                VaultActions.Jump_Prediction, 
+                new VaultCreator<VaultJumpPrediction>(controller));
+            
+            AddActionIfFlagSet(vaultActions, 
+                VaultActions.Vault_Down, 
+                new VaultCreator<VaultDown>(controller));
         }
 
         private void Update()
@@ -91,7 +101,6 @@ namespace Climbing
             {
                 if (!curAction.Update())
                     controller.isVaulting = false;
-
             }
         }
 
@@ -102,16 +111,12 @@ namespace Climbing
             {
                 if(!curAction.FixedUpdate())
                     controller.isVaulting = false;
-
             }
         }
 
         private void OnAnimatorIK(int layerIndex)
         {
-            if (curAction != null)
-            {
-                curAction.OnAnimatorIK(layerIndex);
-            }
+            curAction?.OnAnimatorIK(layerIndex);
         }
 
         private void OnDrawGizmos()
@@ -120,12 +125,6 @@ namespace Climbing
             {
                 curAction.DrawGizmos();
             }
-        }
-
-        private void Add(VaultAction action)
-        {
-            if (action != null)
-                actions.Add(action);
         }
     }
 

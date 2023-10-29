@@ -5,6 +5,9 @@ namespace Climbing
     public class VaultSlide : VaultAction
     {
         private float dis;
+
+        public VaultSlide() { }
+
         public VaultSlide(ThirdPersonController _vaultingController, Action _actionInfo) : base(_vaultingController, _actionInfo)
         {
         }

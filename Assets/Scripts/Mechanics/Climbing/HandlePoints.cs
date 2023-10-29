@@ -68,10 +68,6 @@ namespace Climbing
             }
 
             DeletePrevious(ps, furthestLeft, furthestRight);
-
-            ps = null;
-            ps = GetComponentsInChildren<Point>();
-
             CreatePoints(furthestLeft, furthestRight);
         }
 
@@ -90,6 +86,7 @@ namespace Climbing
         {
             float disLtoR = Vector3.Distance(furthestLeft.transform.position, furthestRight.transform.position);
             int pointCount = Mathf.FloorToInt(disLtoR / posInterval);
+
             Vector3 direction = furthestRight.transform.position - furthestLeft.transform.position;
             direction.Normalize();
 
@@ -138,8 +135,8 @@ namespace Climbing
 
         void CreateIndicators()
         {
-            GameObject leftPoint = Instantiate(pointPrefab) as GameObject;
-            GameObject rightPoint = Instantiate(pointPrefab) as GameObject;
+            GameObject leftPoint = Instantiate(pointPrefab);
+            GameObject rightPoint = Instantiate(pointPrefab);
 
             leftPoint.transform.parent = transform;
             leftPoint.transform.localPosition = -(Vector3.right / 2) + new Vector3(0.1f, 0f, 0f);
@@ -152,6 +149,7 @@ namespace Climbing
 
             furthestLeft = leftPoint.GetComponent<Point>();
             furthestRight = rightPoint.GetComponent<Point>();
+
             furthestLeft.type = pointType;
             furthestRight.type = pointType;
         }
@@ -160,16 +158,17 @@ namespace Climbing
         {
             Point ret = null;
             float minDist = float.PositiveInfinity;
+
             for (int i = 0; i < pointsInOrder.Count; i++)
             {
-                if (pointsInOrder[i] == null)
-                    continue;
-
-                float dist = Vector3.Distance(pointsInOrder[i].transform.position, playerPos);
-                if (dist < minDist)
+                if (pointsInOrder[i] != null)
                 {
-                    minDist = dist;
-                    ret = pointsInOrder[i];
+                    float dist = Vector3.Distance(pointsInOrder[i].transform.position, playerPos);
+                    if (dist < minDist)
+                    {
+                        minDist = dist;
+                        ret = pointsInOrder[i];
+                    }
                 }
             }
 

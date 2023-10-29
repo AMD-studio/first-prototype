@@ -286,6 +286,9 @@ namespace Climbing
         public void SetKinematic(bool active)
         {
             rb.isKinematic = active;
+            rb.interpolation = active ? 
+                RigidbodyInterpolation.Interpolate : 
+                RigidbodyInterpolation.None;
         }
 
         public void EnableFeetIK()

@@ -6,7 +6,9 @@ namespace Climbing
     {
         private float timeDrop = 0;
 
-        public VaultDown(ThirdPersonController _vaultingController) : base(_vaultingController)
+        private VaultDown() { }
+
+        public VaultDown(ThirdPersonController _vaultingController, Action _actionInfo = null) : base(_vaultingController)
         {
         }
 

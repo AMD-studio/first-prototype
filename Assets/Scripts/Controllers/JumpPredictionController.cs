@@ -58,7 +58,10 @@ namespace Climbing
         /// </summary>
         public void CheckJump()
         {
-            if (hasArrived() && !controller.isJumping && ((controller.isGrounded && curPoint == null) || curPoint != null) && controller.characterMovement.limitMovement)
+            if (hasArrived() && 
+                !controller.isJumping && 
+                ((controller.isGrounded && curPoint == null) || curPoint != null) && 
+                controller.characterMovement.limitMovement)
             {
                 if (controller.characterInput.jump && controller.characterInput.movement != Vector2.zero)
                 {
@@ -297,8 +300,6 @@ namespace Climbing
         /// </summary>
         public bool SetParabola(Vector3 start, Vector3 end)
         {
-            Vector2 a = new Vector2(start.x, start.z);
-            Vector2 b = new Vector2(end.x, end.z);
             distance = Vector3.Distance(start, end);
 
             if (end.y - start.y > maxHeight || (distance > maxDistance))

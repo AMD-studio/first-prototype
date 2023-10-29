@@ -7,7 +7,9 @@ namespace Climbing
     {
         private JumpPredictionController jumpController;
 
-        public VaultJumpPrediction(ThirdPersonController _vaultingController) : base(_vaultingController)
+        private VaultJumpPrediction() { }
+
+        public VaultJumpPrediction(ThirdPersonController _vaultingController, Action _actionInfo = null) : base(_vaultingController)
         {
             jumpController = controller.GetComponent<JumpPredictionController>();
         }

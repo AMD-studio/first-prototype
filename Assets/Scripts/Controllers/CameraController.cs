@@ -14,12 +14,10 @@ namespace Climbing
         private float curTime = 0.0f;
         private bool anim = false;
 
-
         void Start()
         {
             cameraOffset = GetComponent<CinemachineCameraOffset>();
         }
-
 
         void Update()
         {
@@ -38,9 +36,7 @@ namespace Climbing
         /// </summary>
         public void NewOffset(bool offset)
         {
-            _target = offset ? 
-                _offset : 
-                _default;
+            _target = offset ? _offset : _default;
             anim = true;
             curTime = 0;
         }

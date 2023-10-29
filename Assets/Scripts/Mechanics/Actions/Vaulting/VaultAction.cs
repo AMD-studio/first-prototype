@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace Climbing
-{ 
+{
     public abstract class VaultAction
     {
         protected AnimationClip clip;
@@ -18,6 +18,8 @@ namespace Climbing
         protected float landOffset;
         protected float startDelay = 0f;
         protected string tag;
+
+        public VaultAction() { }
 
         public VaultAction(ThirdPersonController _controller)
         {

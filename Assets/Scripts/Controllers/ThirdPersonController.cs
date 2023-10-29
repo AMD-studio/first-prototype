@@ -88,10 +88,7 @@ namespace Climbing
 
         public void AddMovementInput(Vector2 direction)
         {
-            Vector3 translation = Vector3.zero;
-
-            translation = GroundMovement(direction);
-
+            Vector3 translation = GroundMovement(direction);
             characterMovement.SetVelocity(Vector3.ClampMagnitude(translation, 1.0f));
         }
 
@@ -151,6 +148,7 @@ namespace Climbing
                 characterAnimation.animator.SetBool("Run", true);
             }
         }
+
         public void ToggleWalk()
         {
             if (characterMovement.GetState() != MovementState.Walking)
@@ -160,7 +158,6 @@ namespace Climbing
                 characterAnimation.animator.SetBool("Run", false);
             }
         }
-
 
         public float GetCurrentVelocity()
         {
@@ -174,13 +171,14 @@ namespace Climbing
             dummy = true;
             allowMovement = false;
         }
+
         public void EnableController()
         {
             characterMovement.SetKinematic(false);
             characterMovement.EnableFeetIK();
             characterMovement.ApplyGravity();
             characterMovement.stopMotion = false;
-            dummy = false; 
+            dummy = false;
             allowMovement = true;
         }
     }

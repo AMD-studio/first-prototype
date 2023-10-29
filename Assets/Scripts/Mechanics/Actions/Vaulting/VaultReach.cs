@@ -9,6 +9,8 @@ namespace Climbing
         private Vector3 leftHandPosition;
         private string HandAnimVariableName;
 
+        public VaultReach() { }
+
         public VaultReach(ThirdPersonController _vaultingController, Action _actionInfo) : base(_vaultingController, _actionInfo)
         {
             ActionVaultReach action = (ActionVaultReach)_actionInfo;

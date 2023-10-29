@@ -8,6 +8,8 @@ namespace Climbing
         private Quaternion leftHandRotation;
         private string HandAnimVariableName;
 
+        public VaultObstacle() { }
+
         public VaultObstacle(ThirdPersonController _vaultingController, Action _actionInfo) : base(_vaultingController, _actionInfo)
         {
             ActionVaultObstacle action = (ActionVaultObstacle)_actionInfo;

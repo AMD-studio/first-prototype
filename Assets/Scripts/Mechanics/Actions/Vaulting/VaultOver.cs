@@ -4,6 +4,8 @@ namespace Climbing
 {
     public class VaultOver : VaultAction
     {
+        public VaultOver() { }
+
         public VaultOver(ThirdPersonController _vaultingController, Action action) : base(_vaultingController, action)
         {
         }

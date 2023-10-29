@@ -6,7 +6,10 @@ namespace Climbing
     public class VaultClimbLedge : VaultAction
     {
         readonly ClimbController climbController;
-        public VaultClimbLedge(ThirdPersonController _vaultingController) : base(_vaultingController)
+
+        public VaultClimbLedge() { }
+
+        public VaultClimbLedge(ThirdPersonController _vaultingController, Action _actionInfo = null) : base(_vaultingController)
         {
             climbController = controller.GetComponent<ClimbController>();
         }
