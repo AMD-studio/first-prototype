@@ -9,6 +9,7 @@ public class HUDController : MonoBehaviour
     public static HUDController Instance;
     public GameObject ActionLabel;
     public GameObject Inventory;
+    public GameObject MainCamera;
 
     private void Awake()
     {
@@ -34,7 +35,10 @@ public class HUDController : MonoBehaviour
 
     public void ToggleInventory()
     {
+        var cameraController = MainCamera.GetComponent<CameraController>();
         var isInventoryOpen = Inventory.active;
         Inventory.SetActive(!isInventoryOpen);
+        cameraController.enabled = isInventoryOpen;
+        Time.timeScale = isInventoryOpen ? 1 : 0;
     }
 }

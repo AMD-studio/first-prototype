@@ -13,7 +13,7 @@ public class Stick : MonoBehaviour, ICollectible
     public void Collect()
     {
         Destroy(gameObject);
-        //OnStickCollected?.Invoke(stickData);
+        OnStickCollected?.Invoke(stickData);
     }
 
     

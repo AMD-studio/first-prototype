@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f67be565e16aef246aa05569c1b8ffc7, type: 3}
   m_Name: Stick
   m_EditorClassIdentifier: 
-  displayName: 
-  icon: {fileID: 0}
+  displayName: Stick
+  icon: {fileID: 21300000, guid: fccb7799e65124640a69cb5786286a73, type: 3}
