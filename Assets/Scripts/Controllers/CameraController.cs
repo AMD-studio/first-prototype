@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace Climbing
 {
@@ -14,13 +18,16 @@ namespace Climbing
         private float curTime = 0.0f;
         private bool anim = false;
 
+
         void Start()
         {
             cameraOffset = GetComponent<CinemachineCameraOffset>();
         }
 
+
         void Update()
         {
+            //Lerps Camera Position to the new offset
             if (anim)
             {
                 curTime += Time.deltaTime / maxTime;
@@ -34,9 +41,13 @@ namespace Climbing
         /// <summary>
         /// Adds Offset to the camera while being on Climbing or inGround
         /// </summary>
-        public void NewOffset(bool offset)
+        public void newOffset(bool offset)
         {
-            _target = offset ? _offset : _default;
+            if (offset)
+                _target = _offset;
+            else
+                _target = _default;
+
             anim = true;
             curTime = 0;
         }

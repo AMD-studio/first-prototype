@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿
+
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Climbing
@@ -10,24 +13,11 @@ namespace Climbing
         private ThirdPersonController controller;
         private Vector3 animVelocity;
 
-        [HideInInspector] 
-        public Animator animator;
+        [HideInInspector] public Animator animator;
         public SwitchCameras switchCameras;
         public AnimatorStateInfo animState;
 
-        private MatchTargetWeightMask matchTargetWeightMask = new(Vector3.one, 0);
-
-        private readonly Dictionary<Vector2, string> directionToAnimation = new()
-        {
-            { new Vector2(-1, 0), "Braced Hang Hop Left" },
-            { new Vector2(-1, 1), "Braced Hang Hop Left" },
-            { new Vector2(-1, -1), "Braced Hang Hop Left" },
-            { new Vector2(1, 0), "Braced Hang Hop Right" },
-            { new Vector2(1, 1), "Braced Hang Hop Right" },
-            { new Vector2(1, -1), "Braced Hang Hop Right" },
-            { new Vector2(0, 1), "Braced Hang Hop Up" },
-            { new Vector2(0, -1), "Braced Hang Hop Down" }
-        };
+        private MatchTargetWeightMask matchTargetWeightMask = new MatchTargetWeightMask(Vector3.one, 0);
 
         void Start()
         {
@@ -42,8 +32,14 @@ namespace Climbing
 
             animState = animator.GetCurrentAnimatorStateInfo(0);
 
-            // One of tags
-            animator.applyRootMotion = animState.IsTag("Root") || animState.IsTag("Drop");
+            if (animState.IsTag("Root") || animState.IsTag("Drop"))
+            {
+                animator.applyRootMotion = true;
+            }
+            else
+            {
+                animator.applyRootMotion = false;
+            }
         }
 
         public void SetAnimVelocity(Vector3 value) { animVelocity = value; animVelocity.y = 0; }
@@ -83,27 +79,40 @@ namespace Climbing
         {
             if (state == ClimbController.ClimbState.BHanging)
             {
-                if (directionToAnimation.TryGetValue(direction, out string animation))
+                if (direction.x == -1 && direction.y == 0 ||
+                    direction.x == -1 && direction.y == 1 ||
+                    direction.x == -1 && direction.y == -1)
                 {
-                    animator.CrossFade(animation, 0.2f);
+                    animator.CrossFade("Braced Hang Hop Left", 0.2f);
+                    startTime = 0.2f;
+                    endTime = 0.49f;
+                }
+                else if (direction.x == 1 && direction.y == 0 ||
+                        direction.x == 1 && direction.y == -1 ||
+                        direction.x == 1 && direction.y == 1)
+                {
+                    animator.CrossFade("Braced Hang Hop Right", 0.2f);
+                    startTime = 0.2f;
+                    endTime = 0.49f;
+                }
+                else if (direction.x == 0 && direction.y == 1)
+                {
+                    animator.CrossFade("Braced Hang Hop Up", 0.2f);
+                    startTime = 0.3f;
+                    endTime = 0.48f;
+                }
+                else if (direction.x == 0 && direction.y == -1)
+                {
 
-                    if (direction == Vector3.up || direction == Vector3.down)
-                    {
-                        startTime = 0.3f;
-                        endTime = (direction == Vector3.down) ? 0.7f : 0.48f;
-                    }
-                    else
-                    {
-                        startTime = 0.2f;
-                        endTime = 0.49f;
-                    }
+                    animator.CrossFade("Braced Hang Hop Down", 0.2f);
+                    startTime = 0.3f;
+                    endTime = 0.7f;
                 }
             }
 
             animator.SetInteger("Climb State", (int)state);
             animator.SetBool("Hanging", true);
         }
-
         public void BracedClimb()
         {
             animator.CrossFade("Braced Hang To Crouch", 0.2f);

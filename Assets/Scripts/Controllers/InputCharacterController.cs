@@ -11,19 +11,14 @@ namespace Climbing
         [HideInInspector] public bool jump;
         [HideInInspector] public bool drop;
 
-        private void OnEnable()
-        {
-            if(controls != null)
-                controls.Enable();
-        }
+        private void OnEnable() => controls?.Enable();
 
-        private void OnDisable()
-        {
-            if (controls != null)
-                controls.Disable();
-        }
+        private void OnDisable() => controls?.Disable();
 
-        void Awake()
+        // private void ToggleRun() => run = movement.magnitude > 0.2f && !run;
+        private void Exit() => Application.Quit();
+
+        private void Awake()
         {
             //Hold and Release
             controls = new PlayerControls();
@@ -37,19 +32,5 @@ namespace Climbing
             controls.Player.Run.canceled += ctx => run = ctx.ReadValueAsButton();
             controls.GameManager.Exit.performed += ctx => Exit();
         }
-
-        void ToggleRun()
-        {
-            if (movement.magnitude > 0.2f && run == false)
-                run = true;
-            else
-                run = false;
-        }
-
-        void Exit()
-        {
-            Application.Quit();
-        }
     }
-
 }

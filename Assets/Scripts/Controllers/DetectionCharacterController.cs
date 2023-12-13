@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿
+
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Climbing
@@ -26,9 +28,11 @@ namespace Climbing
         {
             Vector3 rayOrigin = transform.TransformDirection(OriginLedgeRay) + transform.position;
 
-            for (int i = 0; i < FindLedgeNumRays; i++)
+            for(int i = 0; i < FindLedgeNumRays; i++)
             {
-                if (ThrowRayToLedge(rayOrigin + new Vector3(0, 0.15f * i, 0), out hit))
+                bool ret = ThrowRayToLedge(rayOrigin + new Vector3(0, 0.15f * i, 0), out hit);
+
+                if (ret)
                 {
                     return true;
                 }
@@ -38,7 +42,6 @@ namespace Climbing
             Physics.Raycast(Vector3.zero, Vector3.forward, out hit, 0, -1);
             return false;
         }
-
         public bool FindDropLedgeCollision(out RaycastHit hit)
         {
             for (int i = 0; i < DropLedgeNumRays; i++)
@@ -68,13 +71,23 @@ namespace Climbing
 
         public bool FindFootCollision(Vector3 targetPos, Quaternion rot, Vector3 normal)
         {
-            Vector3 pointFoot1 = targetPos + rot * (new Vector3(-0.15f, -0.10f, 0) + OriginFeetRay);
-            Vector3 pointFoot2 = targetPos + rot * (new Vector3(0.10f, 0, 0) + OriginFeetRay);
+            bool foundWall = true;
 
-            return Physics.Raycast(pointFoot1, -normal, FeetRayLength) && 
-                   Physics.Raycast(pointFoot2, -normal, FeetRayLength);
+            Vector3 PointFoot1 = targetPos + rot * (new Vector3(-0.15f, -0.10f, 0) + OriginFeetRay);
+            Vector3 PointFoot2 = targetPos + rot * (new Vector3(0.10f, 0, 0) + OriginFeetRay);
+
+            RaycastHit hit;
+            if (!Physics.Raycast(PointFoot1, -normal, out hit, FeetRayLength))
+            {
+                foundWall = false;
+            }
+            if (!Physics.Raycast(PointFoot2, -normal, out hit, FeetRayLength))
+            {
+                foundWall = false;
+            }
+
+            return foundWall;
         }
-
 
         public bool ThrowRayToLedge(Vector3 origin, out RaycastHit hit)
         {
@@ -109,8 +122,7 @@ namespace Climbing
                 Debug.DrawLine(origin2, origin2 + direction * length, Color.green);
             }
 
-            if (!Physics.Raycast(origin1, direction, out hit, length) && 
-                !Physics.Raycast(origin2, direction, out hit, length)) //Check Forward
+            if (!Physics.Raycast(origin1, direction, out hit, length) && !Physics.Raycast(origin2, direction, out hit, length)) //Check Forward
             {
                 Vector3 origin3 = origin + direction * 0.15f + new Vector3(0,0.5f,0);
 
@@ -137,7 +149,6 @@ namespace Climbing
 
             return Physics.Raycast(origin, transform.TransformDirection(direction), out hit, length, ledgeLayer);
         }
-
         public bool ThrowFootRayToLedge(Vector3 origin, Vector3 direction, float length, out RaycastHit hit)
         {
             if (showDebug)
@@ -182,8 +193,8 @@ namespace Climbing
             {
                 Debug.DrawLine(transform.position + new Vector3(0, 0.5f, 0), transform.position + new Vector3(0, 0.5f, 0) + Vector3.down * 0.8f, Color.green);
             }
-
-            return Physics.Raycast(transform.position + new Vector3(0, 0.3f, 0), Vector3.down, out _, 0.7f);//0.2f
+            RaycastHit hit;
+            return Physics.Raycast(transform.position + new Vector3(0, 0.3f, 0), Vector3.down, out hit, 0.7f);//0.2f
         }
 
         public void FindAheadPoints(ref List<HandlePoints> list)

@@ -242,7 +242,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 1783199433, guid: e6c40bf0eb3fa3645aab7189973412db, type: 3}
-  m_Name: 
+  m_Name: item1
   m_EditorClassIdentifier: 
   Type: 11
   AssetPaths: []

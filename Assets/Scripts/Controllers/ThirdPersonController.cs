@@ -1,8 +1,23 @@
-﻿using System;
+﻿
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Climbing
 {
+    public class ThirdPersonState
+    {
+        [HideInInspector] public bool isGrounded = false;
+        [HideInInspector] public bool isAllowMovement = true;
+        [HideInInspector] public bool isOnAir = false;
+        [HideInInspector] public bool isJumping = false;
+        [HideInInspector] public bool inSlope = false;
+        [HideInInspector] public bool isVaulting = false;
+        [HideInInspector] public bool isDummy = false;
+    }
+
     [RequireComponent(typeof(InputCharacterController))]
     [RequireComponent(typeof(MovementCharacterController))]
     [RequireComponent(typeof(AnimationCharacterController))]
@@ -17,13 +32,7 @@ namespace Climbing
         [HideInInspector] public AnimationCharacterController characterAnimation;
         [HideInInspector] public DetectionCharacterController characterDetection;
         [HideInInspector] public VaultingController vaultingController;
-        [HideInInspector] public bool isGrounded = false;
-        [HideInInspector] public bool allowMovement = true;
-        [HideInInspector] public bool onAir = false;
-        [HideInInspector] public bool isJumping = false;
-        [HideInInspector] public bool inSlope = false;
-        [HideInInspector] public bool isVaulting = false;
-        [HideInInspector] public bool dummy = false;
+        [HideInInspector] public ThirdPersonState state;
 
         [Header("Cameras")]
         public CameraController cameraController;
@@ -43,6 +52,8 @@ namespace Climbing
 
         private void Awake()
         {
+            state = new ThirdPersonState();
+ 
             characterInput = GetComponent<InputCharacterController>();
             characterMovement = GetComponent<MovementCharacterController>();
             characterAnimation = GetComponent<AnimationCharacterController>();
@@ -62,10 +73,10 @@ namespace Climbing
         void Update()
         {
             //Detect if Player is on Ground
-            isGrounded = OnGround();
+            state.isGrounded = OnGround();
 
             //Get Input if controller and movement are not disabled
-            if (!dummy && allowMovement)
+            if (!state.isDummy && state.isAllowMovement)
             {
                 AddMovementInput(characterInput.movement);
 
@@ -88,7 +99,10 @@ namespace Climbing
 
         public void AddMovementInput(Vector2 direction)
         {
-            Vector3 translation = GroundMovement(direction);
+            Vector3 translation = Vector3.zero;
+
+            translation = GroundMovement(direction);
+
             characterMovement.SetVelocity(Vector3.ClampMagnitude(translation, 1.0f));
         }
 
@@ -148,7 +162,6 @@ namespace Climbing
                 characterAnimation.animator.SetBool("Run", true);
             }
         }
-
         public void ToggleWalk()
         {
             if (characterMovement.GetState() != MovementState.Walking)
@@ -159,6 +172,7 @@ namespace Climbing
             }
         }
 
+
         public float GetCurrentVelocity()
         {
             return characterMovement.GetVelocity().magnitude;
@@ -168,18 +182,17 @@ namespace Climbing
         {
             characterMovement.SetKinematic(true);
             characterMovement.enableFeetIK = false;
-            dummy = true;
-            allowMovement = false;
+            state.isDummy = true;
+            state.isAllowMovement = false;
         }
-
         public void EnableController()
         {
             characterMovement.SetKinematic(false);
             characterMovement.EnableFeetIK();
             characterMovement.ApplyGravity();
             characterMovement.stopMotion = false;
-            dummy = false;
-            allowMovement = true;
+            state.isDummy = false; 
+            state.isAllowMovement = true;
         }
     }
 }

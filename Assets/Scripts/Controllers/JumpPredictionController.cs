@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿
+
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace Climbing
 {
@@ -58,10 +62,7 @@ namespace Climbing
         /// </summary>
         public void CheckJump()
         {
-            if (hasArrived() && 
-                !controller.isJumping && 
-                ((controller.isGrounded && curPoint == null) || curPoint != null) && 
-                controller.characterMovement.limitMovement)
+            if (hasArrived() && !controller.state.isJumping && ((controller.state.isGrounded && curPoint == null) || curPoint != null) && controller.characterMovement.limitMovement)
             {
                 if (controller.characterInput.jump && controller.characterInput.movement != Vector2.zero)
                 {
@@ -160,7 +161,7 @@ namespace Climbing
                             }
 
                             controller.DisableController();
-                            controller.isJumping = true;
+                            controller.state.isJumping = true;
                             controller.characterAnimation.animator.SetBool("PredictedJump", true);
                         }
                     }
@@ -195,7 +196,7 @@ namespace Climbing
                                 curPoint = null;
                                 controller.characterMovement.stopMotion = true;
                                 controller.DisableController();
-                                controller.isJumping = true;
+                                controller.state.isJumping = true;
                             }
                         }
                     }
@@ -209,7 +210,7 @@ namespace Climbing
         /// While being on a pole check for next point to land
         /// </summary>
         /// <returns></returns>
-        public bool isMidPoint()
+        public bool IsMidPoint()
         {
             if (curPoint == null || controller.characterInput.drop) //Player is Droping
             {
@@ -227,7 +228,7 @@ namespace Climbing
                     controller.characterMovement.ResetSpeed();
 
                     //Check near points while OnPole
-                    if (curPoint && !controller.isJumping)
+                    if (curPoint && !controller.state.isJumping)
                     {
                         //Delay between allowing new jump
                         if (delay < 0.1f)
@@ -276,7 +277,7 @@ namespace Climbing
                     controller.EnableController();
 
                 controller.characterAnimation.animator.SetBool("PredictedJump", false);
-                controller.isJumping = false;
+                controller.state.isJumping = false;
                 actualSpeed = 0.0f;
                 delay = 0;
                 move = false;
@@ -300,6 +301,8 @@ namespace Climbing
         /// </summary>
         public bool SetParabola(Vector3 start, Vector3 end)
         {
+            Vector2 a = new Vector2(start.x, start.z);
+            Vector2 b = new Vector2(end.x, end.z);
             distance = Vector3.Distance(start, end);
 
             if (end.y - start.y > maxHeight || (distance > maxDistance))

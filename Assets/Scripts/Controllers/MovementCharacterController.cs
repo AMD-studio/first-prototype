@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
 
 namespace Climbing
 {
@@ -23,6 +28,7 @@ namespace Climbing
 
         public delegate void OnLandedDelegate();
         public delegate void OnFallDelegate();
+
         public event OnLandedDelegate OnLanded;
         public event OnFallDelegate OnFall;
 
@@ -60,15 +66,15 @@ namespace Climbing
         void Update()
         {
             //Handle Player Jumps and Landings
-            if (controller.isJumping)
+            if (controller.state.isJumping)
             {
-                controller.allowMovement = true;
+                controller.state.isAllowMovement = true;
 
-                if (!controller.isGrounded)
+                if (!controller.state.isGrounded)
                 {
                     Fall();
                 }
-                else if (controller.isGrounded && controller.onAir)
+                else if (controller.state.isGrounded && controller.state.isOnAir)
                 {
                     Landed();
                 }
@@ -78,13 +84,13 @@ namespace Climbing
         private void FixedUpdate()
         {
             //Limits player movement to avoid falling
-            if (controller.isGrounded)
+            if (controller.state.isGrounded)
             {
                 limitMovement = CheckBoundaries();
             }
 
             //Apply Player Movement
-            if (!controller.dummy)
+            if (!controller.state.isDummy)
             {
                 if (!stopMotion && !controller.characterAnimation.animState.IsName("Fall"))
                 {
@@ -93,13 +99,13 @@ namespace Climbing
             }
 
             //Grant movement while falling
-            if (!controller.dummy && controller.isJumping && controller.characterInput.movement != Vector2.zero && !controller.isVaulting)
+            if (!controller.state.isDummy && controller.state.isJumping && controller.characterInput.movement != Vector2.zero && !controller.state.isVaulting)
             {
                 rb.position += (transform.forward * walkSpeed) * Time.fixedDeltaTime;
             }
 
             //IK Positioning
-            if (!enableFeetIK || controller.dummy)
+            if (!enableFeetIK || controller.state.isDummy)
                 return;
             if (anim == null)
                 return;
@@ -133,13 +139,13 @@ namespace Climbing
                 controller.characterDetection.ThrowRayOnDirection(transform.position, Vector3.down, 1.0f, out hit);
                 if (hit.normal != Vector3.up)
                 {
-                    controller.inSlope = true;
+                    controller.state.inSlope = true;
                     rb.velocity += -new Vector3(hit.normal.x, 0, hit.normal.z) * 1.0f;
                     rb.velocity = rb.velocity + Vector3.up * Physics.gravity.y * 1.6f * Time.fixedDeltaTime;
                 }
                 else
                 {
-                    controller.inSlope = false;
+                    controller.state.inSlope = false;
                 }
 
                 //If player fins Small Obstacle Auto Steps it without affecting the movement
@@ -286,19 +292,25 @@ namespace Climbing
         public void SetKinematic(bool active)
         {
             rb.isKinematic = active;
-            rb.interpolation = active ? 
-                RigidbodyInterpolation.Interpolate : 
-                RigidbodyInterpolation.None;
+            SetInterpolate(active);
+        }
+
+        public void SetInterpolate(bool active)
+        {
+            rb.interpolation = active ? RigidbodyInterpolation.Interpolate : RigidbodyInterpolation.None;
         }
 
         public void EnableFeetIK()
         {
-            enableFeetIK = true;
-            lastPelvisPositionY = 0;
-            leftFootIKPosition = Vector3.zero;
-            rightFootIKPosition = Vector3.zero;
+            SetupIK();
         }
+
         public void DisableFeetIK()
+        {
+            SetupIK();
+        }
+
+        private void SetupIK()
         {
             enableFeetIK = true;
             lastPelvisPositionY = 0;
@@ -313,24 +325,24 @@ namespace Climbing
 
         public void Fall()
         {
-            controller.onAir = true;
+            controller.state.isOnAir = true;
             OnFall();
         }
 
         public void Landed()
         {
             OnLanded();
-            controller.isJumping = false;
-            controller.onAir = false;
+            controller.state.isJumping = false;
+            controller.state.isOnAir = false;
         }
 
-        #endregion
+#endregion
 
         #region Foot IK
 
         private void OnAnimatorIK(int layerIndex)
         {
-            if (!enableFeetIK || controller.dummy || anim == null)
+            if (!enableFeetIK || controller.state.isDummy || anim == null)
                 return;
 
             MovePelvisHeight();
@@ -415,7 +427,7 @@ namespace Climbing
 
         private void AutoStep()
         {
-            if (controller.inSlope)
+            if (controller.state.inSlope)
                 return;
 
             Vector3 offset = new Vector3(0, 0.01f, 0);
@@ -443,7 +455,7 @@ namespace Climbing
             }
         }
 
-        #endregion 
+        #endregion
     }
 
 }

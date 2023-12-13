@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04a15ea93a307b349915777d8efc954f, type: 3}
+  m_Name: QuestDataObject
+  m_EditorClassIdentifier: 
+  questName: asfasfasfas
+  questDesc: rqrtqtwqet
+  isQuestConfirm: 1
+  triggerPosition: {x: -6.37, y: 8.51, z: 74.92}
+  triggerRotation: {x: 0, y: 0, z: 0, w: 0}
+  currentObjectivesID: 0
+  xp: 0
+  objectives:
+  - name: gsdkgjsda
+    spawnObjective: {fileID: 1444139761213569477, guid: 4c2bb4d2086a81f469b3a8dab527a09b,
+      type: 3}
+    triggerPosition: {x: -6.37, y: 8.51, z: 80.6}
+    triggerRotation: {x: 0, y: 0, z: 0, w: 0}
+    triggerScale: {x: 2, y: 2, z: 2}
